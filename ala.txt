@@ -1,0 +1,120 @@
+1.1
+print(np.mean(s))
+
+1.2
+
+fig, ax = plt.subplots(1, 1, figsize = (6,6))
+fig.tight_layout(pad = 4.0)
+plotveccomp(s, 'self_opinion', 'black', '*',ax)
+
+
+1.3
+
+print((sum(np.abs(s - np.mean(s)) >= 2*np.std(s))/len(s))*100)
+
+1.4
+
+A = np.zeros((n, n))
+for i in np.arange(n):
+  A[i, i] = np.sum(W[i, :]) - W[i,i]
+  for j in np.arange(n):
+    if j != i:
+      A[i, j] = -W[i,j]
+I = np.identity(n)
+
+
+1.5
+
+AugmentedMatrix = sp.Matrix(np.hstack((A+I, s.reshape(-1,1))))
+x = sp.symbols('x1:'+str(n)) # symbolic variables x_1, x_2, ..., x_n
+solution = sp.linsolve(AugmentedMatrix, x)
+x_numerical = np.array(list(solution),  dtype = np.float64).flatten()
+
+
+
+2.1
+
+result = np.where(np.dot(P, np.ones(nstations)) >= 7)
+print(result[0])
+print(result[0].shape[0])
+
+
+2.2
+result = np.where(np.dot(P.T, np.ones(npaths)) >= 50)
+print(result[0])
+print(result[0].shape[0])
+
+2.3
+
+result = np.linalg.norm(P.T[0, :] - P.T[1:, :], axis = 1)
+print(result)
+np.argmin(result)
+
+
+2.4
+result = np.dot(P.T, P)
+print(result[3, 9])
+
+2.5
+
+result = np.dot(P, P.T)
+# Stations common to the 1st path and the 100th path
+print(result[0, 99])
+# Number of stations in the 100th path
+print(result[99, 99])
+
+
+
+3
+
+A = np.array([[1, 1], [0, 1]])
+print(A)
+
+# Gram-Schmidt starting with a_1
+q1 = A[:, 0] / np.linalg.norm(A[:, 0])
+q2 = (A[:, 1] - np.dot(q1, A[:, 1])*q1) / np.linalg.norm((A[:, 1] - np.dot(q1, A[:, 1])*q1))
+print(q1)
+print(q2)
+
+# Gram-Schmidt starting with a_2
+q1 = A[:, 1] / np.linalg.norm(A[:, 1])
+q2 = (A[:, 0] - np.dot(q1, A[:, 0])*q1) / np.linalg.norm((A[:, 0] - np.dot(q1, A[:, 0])*q1))
+print(q1)
+print(q2)
+
+
+
+4.1
+
+# Linear dynamical system matrix
+A = np.array([[0.8, 0.05, 0.05],
+              [0.2, 0.8, 0.05],
+              [0, 0.05, 0.9]])
+
+4.2
+# Time period
+T = 200
+
+# Initialize the three drug concentration values to zeros for all time stamps
+X = np.zeros((3, 200)) 
+
+# Initial state vector
+X[:, 0] = np.array([.2, .1, .7])
+
+# Simulate the linear dynamical system for all time stamps
+for j in np.arange(1, 200):
+    X[:, j] = np.dot(A, X[:, j-1])
+
+
+
+4.3
+
+fig, ax = plt.subplots(1, 1, figsize = (6,6))
+fig.tight_layout(pad = 4.0)
+ax.plot(X[0, :])
+ax.plot(X[1, :])
+ax.plot(X[2, :])
+plt.legend(["Drug-1", "Drug-2", "Drug-3"], loc ="upper right")
+
+
+
